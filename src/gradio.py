@@ -32,11 +32,12 @@ set_tracing_disabled(True)
 class AgentOutput(BaseModel):
     final_output: str
     sourceUrl: list[str]
- 
-    
-def structured_output(final_output: str, source_url: list[str]) -> AgentOutput:
+    productID:list[str]
+
+
+def structured_output(final_output: str, source_url: list[str], product_id: str) -> AgentOutput:
     """Structure the output from the agent into a AgentOutput model."""
-    return AgentOutput(final_output=final_output, sourceUrl=source_url).model.schema_json()
+    return AgentOutput(final_output=final_output, sourceUrl=source_url, productID=product_id).model.schema_json()
 
 
 # Strictly follow the output format using the structured_output tool.
@@ -48,7 +49,7 @@ executor_agent = Agent(
          Do NOT return raw search results."
     ),
     tools=[
-        function_tool(mongo.perform_vector_search)
+        function_tool(mongo.perform_vector_search),
     ],
     # model=OpenAIChatCompletionsModel(
     #     model="gpt-4o-2024-08-06", openai_client=openai_client
@@ -98,7 +99,7 @@ async def main():
     # print("--- Executing ---")
     # result_worker = await Runner.run(
     #         executor_agent,
-    #         input=result_main
+    #         input=result_main.final_output,
     # )
     # print()
     # print("--- Executor Agent Output ---")

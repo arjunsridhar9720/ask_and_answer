@@ -22,4 +22,6 @@ dependencies = [
     "gradio>=5.41.0",
     "langfuse>=3.2.2",
     "pydantic>=2.11.7",
+    "nest-asyncio>=1.6.0",
+    "pydantic-ai[logfire]>=0.7.0",
 ]

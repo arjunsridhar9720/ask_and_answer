@@ -246,8 +246,8 @@ class MongoManager:
 
    # https://www.mongodb.com/docs/atlas/atlas-vector-search/vector-search-stage/
     async def perform_vector_search(self, query:str):
-        print("Performing vector search...")
-        print (f"Query: {query}")
+        # print("Performing vector search...")
+        # print (f"Query: {query}")
         # database_object = self.client[dbname]
         db_name = os.getenv("MONGODB_DATABASE")
         collection_name = os.getenv("MONGODB_COLLECTION")
@@ -269,7 +269,7 @@ class MongoManager:
         else:
             projected_fields["document"] = '$$ROOT' # type: ignore
 
-        print(f"Projected fields: {projected_fields}")
+        # print(f"Projected fields: {projected_fields}")
 
         pipeline = [
                 {
