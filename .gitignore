@@ -26,5 +26,11 @@ wheels/
 # Built documentations
 site/
 
+# MLflow experiment tracking
+mlruns/
+
+# Local assets
+assets/
+
 #Pem files
 *.pem

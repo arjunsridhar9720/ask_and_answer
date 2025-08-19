@@ -24,4 +24,5 @@ dependencies = [
     "pydantic>=2.11.7",
     "nest-asyncio>=1.6.0",
     "pydantic-ai[logfire]>=0.7.0",
+    "mlflow>=3.1",
 ]
