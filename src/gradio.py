@@ -11,6 +11,8 @@ from gradio.components.chatbot import ChatMessage
 from dotenv import load_dotenv
 load_dotenv()
 
+from src.utils.pretty_printing import pretty_print
+
 from src.utils.azure_openai.client import get_openai_client
 from src.utils.tools.mongodb.atlas_mongo_util import MongoManager
 from agents import Agent, Runner, ModelSettings, function_tool, OpenAIChatCompletionsModel, trace
@@ -27,25 +29,25 @@ set_default_openai_api ("chat_completions")
 set_tracing_disabled(True)
 
 class AgentOutput(BaseModel):
-    final_output: str
+    reasoning: str
     sourceUrl: list[str]
     productID: list[str]
 
 
-def structured_output(final_output: str, source_url: list[str], product_id: list[str]) -> AgentOutput:
-    """Structure the output from the agent into a AgentOutput model."""
-    return AgentOutput(final_output=final_output, sourceUrl=source_url, productID=product_id).model_dump_json()
+# def structured_output(reasoning: str, source_url: list[str], product_id: list[str]) -> AgentOutput:
+#     """Structure the output from the agent into a AgentOutput model."""
+#     return AgentOutput(reasoning=reasoning, sourceUrl=source_url, productID=product_id).model_dump_json()
 
 # Enable automatic tracing for your framework
 mlflow.openai.autolog()  # For OpenAI
 
 # Creates local mlruns directory for experiments
-mlflow.set_experiment("ask_and_answer_experiment")
+mlflow.set_experiment("ask_and_answer_experiment_1:03pm")
 
 executor_agent = Agent(
     name="ProductSupportAgent",
     instructions=(
-        "You are a product support assistant with access to a knowledge base. Given a search query, you should use the perform_vector_search tool to fetch relevant documents.\
+        "You are a product support assistant with access to a manufacturer's product manuals. Given a search query, use the perform_vector_search tool to retrieve the relevant information.\
          Do NOT return raw search results."
     ),
     tools=[
@@ -66,9 +68,10 @@ main_agent = Agent(
     instructions=planner_instructions,
     tools=[
         executor_agent.as_tool(
-            tool_name="search_tool",
+            tool_name="ProductSupportAgent",
             tool_description="Perform search for a query and return a concise summary.",
-        ), function_tool(structured_output)
+        ), 
+        # function_tool(structured_output)
 
     ],
     # model=OpenAIChatCompletionsModel(
@@ -76,9 +79,8 @@ main_agent = Agent(
     # ),
     model=os.getenv("AZURE_OPENAI_DEPLOYMENT"),
     model_settings=ModelSettings(temperature=0),
+    output_type=AgentOutput
 )
-
-# question = "Can you recommend a paderno kettle that has a capacity more than 1.5L?"
 
 
 # Simple robust Gradio chat handler
@@ -102,11 +104,12 @@ async def chat_handler(messages: list[ChatMessage], state=None):
     chat_history = messages.copy() if isinstance(messages, list) else list(messages)
     async for _item in result_main.stream_events():
         chat_history += oai_agent_stream_to_gradio_messages(_item)
+        # pretty_print(chat_history)
         yield chat_history
 
 
 with gr.Blocks() as demo:
-    gr.Image(os.getenv("CANADIAN_TIRE_LOGO_URL"), show_label=False, width=200)
+    gr.Image(os.getenv("CANADIAN_TIRE_LOGO_URL"), show_label=False, width=150)
     gr.ChatInterface(
         chat_handler,
         title="Customer Support",
