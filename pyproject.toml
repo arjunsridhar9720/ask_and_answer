@@ -9,6 +9,8 @@ dependencies = [
     "msal>=1.33.0",
     "openai-agents>=0.2.3",
     "pymongo>=4.13.2",
+    "openai",
+    "fastmcp",
     "langchain>=0.0.350",
     "langchain-community>=0.0.10",
     "unstructured[pdf]>=0.10.30",

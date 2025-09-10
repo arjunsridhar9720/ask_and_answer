@@ -1,0 +1,23 @@
+{
+  "mcpServers": {
+    "mongodb-mcp": {
+      "command": "npx",
+      "env": {
+        "MONGODB_URI": "mongodb+srv://chatgpt-openai-dev-pl-0.nmkkl.mongodb.net",
+        "MONGODB_CERT_PATH": "C:/Users/Arjun.Sridharkumar/Downloads/X509-chatctc-app 1.pem"
+      },
+      "args": [
+        "-y",
+        "mongodb-mcp-server",
+        "--uri", "${env:MONGODB_URI}",
+        "--tlsCertificateKeyFile", "${env:MONGODB_CERT_PATH}",
+        "--authMechanism", "MONGODB-X509",
+        "--authSource", "$external",
+        "--tls", "true",
+        "--tlsAllowInvalidCertificates", "false",
+        "--directConnection", "false",
+        "--tlsAllowInvalidHostnames", "true"
+      ]
+    }
+  }
+}

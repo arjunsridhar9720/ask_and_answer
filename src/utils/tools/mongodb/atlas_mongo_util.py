@@ -286,5 +286,12 @@ class MongoManager:
                 }
             ]
         results = collection_object.aggregate(pipeline)
+        # print ("RAG Results:")
+        # print (list(results))
+        #write output to a file
+        # with open("rag_results.txt", "w", encoding="utf-8") as f:
+        #     for doc in results:
+        #         f.write(str(doc) + "\n")
+        # print ("RAG Results:")
         return list(results)
        
